@@ -2,36 +2,37 @@
   <v-container is-fluid>
     <v-layout>
 
-      <v-app-bar elevation="0"></v-app-bar>
+      <v-app-bar elevation="0" color="grey-darken-3">
+        <v-app-bar-title>개 JOB 부</v-app-bar-title>
+      </v-app-bar>
 
-      <v-main>
-        <v-card color="blue-grey-darken-1">
-          <v-card-title class="text-center justify-center py-6">
-            <span class="font-weight-bold text-h2 text-basil">
-              개
-            </span>
-            <span>(발 직군)</span>
-            <span class="font-weight-bold text-h2 text-basil">
-              JOB
-            </span>
-            <span>(을)</span>
-            <span class="font-weight-bold text-h2 text-basil">
-              부
-            </span>
-            <span>(탁해)</span>
+      <v-navigation-drawer permanent>
+        <v-list nav>
+          <v-list-item></v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-main class="ma-10">
+        <v-card variant="outlined">
+          <v-card-title class="text-center mt-5 text-h5">
+            {{ calendarHeader }}
           </v-card-title>
-
-          <div>
-            <v-tabs align-tabs="center">
+          <v-card-item>
+            <v-tabs class="ma-5" align-tabs="end">
               <v-tab @click="changeMonth(-1)">&lt; Before</v-tab>
-              <v-card-title>{{ calendarHeader }}</v-card-title>
               <v-tab @click="changeMonth(1)">Next &gt;</v-tab>
             </v-tabs>
+          </v-card-item>
+
+          <v-card-item>
             <v-table>
               <thead>
                 <tr>
                   <th v-for="index in week" :key="index">
-                    {{ index }}
+                    <v-list lines="one">
+                      <v-list-subheader> {{ index }}</v-list-subheader>
+                    </v-list>
+
                   </th>
                 </tr>
               </thead>
@@ -40,22 +41,36 @@
                 <tr v-for="(index, i) in days" :key="i">
 
                   <td v-for="childIndex in index" :key="childIndex">
-                    {{ childIndex }}
+                    <v-list lines="two">
+                      <v-list-subheader>{{ childIndex }}</v-list-subheader>
+                      <v-list-item v-if="childIndex === new Date().getDate()">
+                        <template v-slot:prepend>
+                          <v-badge color="success" content="today"></v-badge>
 
-                    <div v-if="childIndex != null" v-for="(item, i) in jobs">
-                      
-                      <v-radio-group v-if="item.start === childIndex || item.end === childIndex"
-                        v-model="item.toggle" color="primary">
+                        </template>
+                      </v-list-item>
+
+                      <v-list-item v-else>
+
+                      </v-list-item>
+                    </v-list>
+
+
+
+                    <!-- <div v-if="childIndex != null" v-for="(item, i) in jobs">
+
+                      <v-radio-group v-if="item.start === childIndex || item.end === childIndex" v-model="item.toggle"
+                        color="primary">
                         <v-radio :label="item.name" :value=item.name></v-radio>
                       </v-radio-group>
 
-                    </div>
+                    </div> -->
                   </td>
 
                 </tr>
               </tbody>
             </v-table>
-          </div>
+          </v-card-item>
 
         </v-card>
       </v-main>
@@ -118,7 +133,7 @@ export default {
       for (let i = 0; i < endDayOfTheMonth + startDayOfTheMonth; i += 7) {
         this.days.push(combinedDays.slice(i, i + 7));
       }
-      this.calendarHeader = `${year}년 ${month + 1} 월`;
+      this.calendarHeader = `${year}. ${month + 1}`;
       this.addLastWeekEmptyDays();
     },
 
